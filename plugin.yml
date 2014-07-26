@@ -1,0 +1,25 @@
+name: PrisonMining
+main: JacksonML\PrisonMining\PrisonMining
+version: 1.0.0
+api: 1.1.0
+commands:
+    prm:
+        description: "Shows Prison Commands"
+        usage: "/prm"
+        permission: prisonmining.help
+    prmspot1:
+        description: "Defines corner 1"
+        usage: "/prmspot1"
+        permission: prisonmining.spot1
+    prmspot2:
+        description: "Defines corner 2"
+        usage: "/prmspot2"
+        permission: prisonmining.spot2
+    prmdefine:
+        description: "Saves mine location"
+        usage: "/prmdefine <id>"
+        permission: prisonmining.define
+permissions:
+    prisonmining.help:
+        description: "Allows player to view Prison Commands"
+        defualt: true
