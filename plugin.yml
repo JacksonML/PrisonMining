@@ -19,7 +19,20 @@ commands:
         description: "Saves mine location"
         usage: "/prmdefine <id>"
         permission: prisonmining.define
+    prmfill:
+        description: "Fills a mine with blocks"
+        usage: "/prmfill <id>"
+        permission: prisonmining.fill
 permissions:
     prisonmining.help:
         description: "Allows player to view Prison Commands"
         defualt: true
+    prisonmining.spot1:
+        description: "Allows player to define corner 1"
+        default: true
+    prisonmining.spot2:
+        description: "Allows player to define corner 2"
+        default: true
+    prisonmining.define:
+        description: "Allows player to define a new mine"
+        default: true

@@ -5,9 +5,9 @@ namespace JacksonML\PrisonMining;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-//use pocketmine\Server;
-//use pocketmine\math\Vector3;
-//use pocketmine\block\block;
+use pocketmine\Server;
+use pocketmine\math\Vector3;
+use pocketmine\block\block;
 use pocketmine\utils\Config;
 
 class PrisonMining extends PluginBase{
@@ -64,8 +64,42 @@ class PrisonMining extends PluginBase{
                 "coords" => $this->test1->coords);
             array_push($this->mineData, $mineToSendData);
             return true;
+        }elseif(strtolower($command->getName()) === "prmfill"){
+            $mineId = $args[0];
+            $this->getLogger()->info(count($this->test2));
+            for($i = 0;$i < count($this->mineData);$i++){
+            $this->getLogger()->info($this->mineData[$i]["name"]);
+            if($this->mineData[$i]["name"] == $mineId){
+                $this->getLogger()->info("YES 2");
+                for($xLoop = 0; $xLoop <= abs($this->mineData[$i]["coords"]["coords2"]["x"]-$this->mineData[$i]["coords"]["coords1"]["x"]);$xLoop++){
+                    $this->getLogger()->info("X");
+                    for($yLoop = 0; $yLoop <= abs($this->mineData[$i]["coords"]["coords2"]["y"]-$this->mineData[$i]["coords"]["coords1"]["y"]);$yLoop++){
+                        $this->getLogger()->info("Y");
+                        for($zLoop = 0; $zLoop <= abs($this->mineData[$i]["coords"]["coords2"]["z"]-$this->mineData[$i]["coords"]["coords1"]["z"]);$zLoop++){
+                            $this->getLogger()->info("Z");
+                            $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$this->mineData[$i]["coords"]["coords1"]["x"],$yLoop+$this->mineData[$i]["coords"]["coords1"]["y"],$zLoop+$this->mineData[$i]["coords"]["coords1"]["z"]), Block::get(46), true, true);
+                            $this->getLogger()->info("Placed block at x:" . $xLoop . ", y:" . $yLoop . ", z:" . $zLoop);
+                        }     
+                    }
+                }
+            }
+        }
         }
         return false;
+    }
+    function fillMine($mineId){
+        for($i = 0;$i < count($this->test2);$i++){
+            if($this->test2[0]["name"] == $mineId){
+                for($xLoop = 0; $xLoop < $this->test2[$i]["coords"]["coords1"]["x"]-$this->test2[$i]["coords"]["coords2"]["x"];$xLoop++){
+                    for($yLoop = 0; $yLoop < $this->test2[$i]["coords"]["coords1"]["y"]-$this->test2[$i]["coords"]["coords2"]["y"];$yLoop++){
+                        for($zLoop = 0; $zLoop < $this->test2[$i]["coords"]["coords1"]["z"]-$this->test2[$i]["coords"]["coords2"]["z"];$zLoop++){
+                            $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$this->test2[$i]["coords"]["coords1"]["x"],$yLoop+$this->test2[$i]["coords"]["coords1"]["y"],$zLoop+$this->test2[$i]["coords"]["coords1"]["z"]), Block::get(46), true, true);
+                            
+                        }     
+                    }
+                }
+            }
+        }
     }
 }
 
