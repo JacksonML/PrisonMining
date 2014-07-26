@@ -13,9 +13,13 @@ use pocketmine\utils\Config;
 class PrisonMining extends PluginBase{
     public function onEnable(){
         $this->getLogger()->info("Prison Mining is loading mines");
+        
+        //Creates the config folder and file
         @mkdir($this->getDataFolder());
-        $this->mineData = array();
         $this->configFile = new Config($this->getDataFolder()."saves.yml", Config::YAML, array());
+        
+        //Pulls data out of config and into a variable
+        $this->mineData = array();
         $this->test2 = $this->configFile->get("Mines");
         for($i = 0;$i < count($this->test2);$i++){
             $mineToSendDataEnable = array("name" => $this->test2[$i]["name"],
@@ -29,6 +33,7 @@ class PrisonMining extends PluginBase{
     public function onDisable(){
         $this->getLogger()->info("Prison Mining is saving mines");
         
+        //Re-Saves mines to file
         $this->configFile->set("Mines",$this->mineData);
         $this->configFile->save();
         
@@ -65,18 +70,22 @@ class PrisonMining extends PluginBase{
             array_push($this->mineData, $mineToSendData);
             return true;
         }elseif(strtolower($command->getName()) === "prmfill"){
+            if($args[0]){ // Controls if command returns false or true
             $mineId = $args[0];
             $this->getLogger()->info(count($this->test2));
             for($i = 0;$i < count($this->mineData);$i++){
             $this->getLogger()->info($this->mineData[$i]["name"]);
             if($this->mineData[$i]["name"] == $mineId){
-                $this->getLogger()->info("YES 2");
-                for($xLoop = 0; $xLoop <= abs($this->mineData[$i]["coords"]["coords2"]["x"]-$this->mineData[$i]["coords"]["coords1"]["x"]);$xLoop++){
-                    $this->getLogger()->info("X");
-                    for($yLoop = 0; $yLoop <= abs($this->mineData[$i]["coords"]["coords2"]["y"]-$this->mineData[$i]["coords"]["coords1"]["y"]);$yLoop++){
-                        $this->getLogger()->info("Y");
-                        for($zLoop = 0; $zLoop <= abs($this->mineData[$i]["coords"]["coords2"]["z"]-$this->mineData[$i]["coords"]["coords1"]["z"]);$zLoop++){
-                            $this->getLogger()->info("Z");
+                
+                // Creates variables for easier coding
+                $x1Loop = $this->mineData[$i]["coords"]["coords1"]["x"];$x2Loop = $this->mineData[$i]["coords"]["coords2"]["x"];
+                $y1Loop = $this->mineData[$i]["coords"]["coords1"]["y"];$y2Loop = $this->mineData[$i]["coords"]["coords2"]["y"];
+                $z1Loop = $this->mineData[$i]["coords"]["coords1"]["z"];$z2Loop = $this->mineData[$i]["coords"]["coords2"]["z"];
+                
+                // Loops through all blocks and places all blocks
+                for($xLoop = 0; $xLoop <= abs($x2Loop-$x1Loop);$xLoop++){ //Loops through all X blocks
+                    for($yLoop = 0; $yLoop <= abs($y2Loop-$y1Loop);$yLoop++){ //Loops through all Y blocks
+                        for($zLoop = 0; $zLoop <= abs($z2Loop-$z1Loop);$zLoop++){ //Loops through all Z blocks
                             $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$this->mineData[$i]["coords"]["coords1"]["x"],$yLoop+$this->mineData[$i]["coords"]["coords1"]["y"],$zLoop+$this->mineData[$i]["coords"]["coords1"]["z"]), Block::get(46), true, true);
                             $this->getLogger()->info("Placed block at x:" . $xLoop . ", y:" . $yLoop . ", z:" . $zLoop);
                         }     
@@ -84,21 +93,7 @@ class PrisonMining extends PluginBase{
                 }
             }
         }
-        }
-        return false;
-    }
-    function fillMine($mineId){
-        for($i = 0;$i < count($this->test2);$i++){
-            if($this->test2[0]["name"] == $mineId){
-                for($xLoop = 0; $xLoop < $this->test2[$i]["coords"]["coords1"]["x"]-$this->test2[$i]["coords"]["coords2"]["x"];$xLoop++){
-                    for($yLoop = 0; $yLoop < $this->test2[$i]["coords"]["coords1"]["y"]-$this->test2[$i]["coords"]["coords2"]["y"];$yLoop++){
-                        for($zLoop = 0; $zLoop < $this->test2[$i]["coords"]["coords1"]["z"]-$this->test2[$i]["coords"]["coords2"]["z"];$zLoop++){
-                            $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$this->test2[$i]["coords"]["coords1"]["x"],$yLoop+$this->test2[$i]["coords"]["coords1"]["y"],$zLoop+$this->test2[$i]["coords"]["coords1"]["z"]), Block::get(46), true, true);
-                            
-                        }     
-                    }
-                }
-            }
+        return true;}else{return false;}
         }
     }
 }
