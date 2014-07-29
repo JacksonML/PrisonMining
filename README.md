@@ -18,6 +18,6 @@
 <h2>Change log</h2>
 <code>Pre-Alpha 0.2: <ul>
 <li>Moved mine class to separate file for cleaner code</li>
-<li>Fixed bug that caused mines to fill in the wrong direction. Plugin now processes coordinates to prevent bad filling.</li>
+<li>Fixed bug that caused mines to fill in the wrong direction. Plugin now processes coordinates to prevent bad filling.</li></code>
 <br>
 Version: Pre-Alpha: 0.2

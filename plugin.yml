@@ -36,3 +36,6 @@ permissions:
     prisonmining.define:
         description: "Allows player to define a new mine"
         default: true
+    prisonmining.fill:
+        description: "Allows a player to fill in a mine with blocks"
+        default: true

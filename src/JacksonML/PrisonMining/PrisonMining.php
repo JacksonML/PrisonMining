@@ -99,5 +99,3 @@ class PrisonMining extends PluginBase{
         }
     }
 }
-
-
