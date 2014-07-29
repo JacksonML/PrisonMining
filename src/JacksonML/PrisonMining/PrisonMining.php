@@ -9,6 +9,7 @@ use pocketmine\Server;
 use pocketmine\math\Vector3;
 use pocketmine\block\block;
 use pocketmine\utils\Config;
+use JacksonML\PrisonMining\Mine;
 
 class PrisonMining extends PluginBase{
     public function onEnable(){
@@ -64,13 +65,14 @@ class PrisonMining extends PluginBase{
             return true;
         }elseif(strtolower($command->getName()) === "prmdefine"){
             $this->test1 = new Mine($args[0],$this->x1,$this->y1,$this->z1,$this->x2,$this->y2,$this->z2);
-            $sender->sendMessage($this->test1->coords["coords1"]["x"]);
+            $sender->sendMessage($this->test1->coords["coords1"][0]);
             $mineToSendData = array("name" => $this->test1->name,
                 "coords" => $this->test1->coords);
             array_push($this->mineData, $mineToSendData);
             return true;
         }elseif(strtolower($command->getName()) === "prmfill"){
             if($args[0]){ // Controls if command returns false or true
+            
             $mineId = $args[0];
             $this->getLogger()->info(count($this->test2));
             for($i = 0;$i < count($this->mineData);$i++){
@@ -78,15 +80,15 @@ class PrisonMining extends PluginBase{
             if($this->mineData[$i]["name"] == $mineId){
                 
                 // Creates variables for easier coding
-                $x1Loop = $this->mineData[$i]["coords"]["coords1"]["x"];$x2Loop = $this->mineData[$i]["coords"]["coords2"]["x"];
-                $y1Loop = $this->mineData[$i]["coords"]["coords1"]["y"];$y2Loop = $this->mineData[$i]["coords"]["coords2"]["y"];
-                $z1Loop = $this->mineData[$i]["coords"]["coords1"]["z"];$z2Loop = $this->mineData[$i]["coords"]["coords2"]["z"];
+                $x1Loop = $this->mineData[$i]["coords"]["coords1"][0];$x2Loop = $this->mineData[$i]["coords"]["coords2"][0];
+                $y1Loop = $this->mineData[$i]["coords"]["coords1"][1];$y2Loop = $this->mineData[$i]["coords"]["coords2"][1];
+                $z1Loop = $this->mineData[$i]["coords"]["coords1"][2];$z2Loop = $this->mineData[$i]["coords"]["coords2"][2];
                 
                 // Loops through all blocks and places all blocks
-                for($xLoop = 0; $xLoop <= abs($x2Loop-$x1Loop);$xLoop++){ //Loops through all X blocks
-                    for($yLoop = 0; $yLoop <= abs($y2Loop-$y1Loop);$yLoop++){ //Loops through all Y blocks
-                        for($zLoop = 0; $zLoop <= abs($z2Loop-$z1Loop);$zLoop++){ //Loops through all Z blocks
-                            $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$this->mineData[$i]["coords"]["coords1"]["x"],$yLoop+$this->mineData[$i]["coords"]["coords1"]["y"],$zLoop+$this->mineData[$i]["coords"]["coords1"]["z"]), Block::get(46), true, true);
+                for($xLoop = 0; $xLoop <= $x2Loop-$x1Loop;$xLoop++){ //Loops through all X blocks
+                    for($yLoop = 0; $yLoop <= $y2Loop-$y1Loop;$yLoop++){ //Loops through all Y blocks
+                        for($zLoop = 0; $zLoop <= $z2Loop-$z1Loop;$zLoop++){ //Loops through all Z blocks
+                            $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$this->mineData[$i]["coords"]["coords1"][0],$yLoop+$this->mineData[$i]["coords"]["coords1"][1],$zLoop+$this->mineData[$i]["coords"]["coords1"][2]), Block::get(46), true, true);
                             $this->getLogger()->info("Placed block at x:" . $xLoop . ", y:" . $yLoop . ", z:" . $zLoop);
                         }     
                     }
@@ -98,18 +100,4 @@ class PrisonMining extends PluginBase{
     }
 }
 
-class Mine{
-    public $name;
-    public $coords;
-    public function __construct($name,$x1,$y1,$z1,$x2,$y2,$z2){
-        $this->name = $name;
-        $coords1 = array("x" => $x1,
-            "y" => $y1,
-            "z" => $z1);
-        $coords2 = array("x" => $x2,
-            "y" => $y2,
-            "z" => $z2);
-        $this->coords = array("coords1" => $coords1,
-            "coords2" => $coords2);
-}
-}
+

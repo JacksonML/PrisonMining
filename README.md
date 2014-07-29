@@ -5,6 +5,8 @@
 <h3>Alpha:</h3><ul>
 <li>Mines fill themselves with blocks defined by the user</li>
 <li>Mines will autofill a specified amount of time</li>
+<li>Fix bug with config file generating blank useless entry</li>
+<li>Create a /prmprocess to process mines in case they contain invalid data</li>
 </ul>
 <h3>Beta</h3><ul>
 <li>Plugin will respond with useful log messages</li>
@@ -13,4 +15,9 @@
 <h3>Release</h3><ul>
 <li>More todo to come!</li></ul>
 <br>
-Version: Pre-Alpha: 0.1
+<h2>Change log</h2>
+<code>Pre-Alpha 0.2: <ul>
+<li>Moved mine class to separate file for cleaner code</li>
+<li>Fixed bug that caused mines to fill in the wrong direction. Plugin now processes coordinates to prevent bad filling.</li>
+<br>
+Version: Pre-Alpha: 0.2
