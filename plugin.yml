@@ -23,6 +23,9 @@ commands:
         description: "Fills a mine with blocks"
         usage: "/prmfill <id>"
         permission: prisonmining.fill
+    prmaddblock:
+        description: "Adds a block to a specified mine"
+        usage: "/prmfill <mineID> <blockID> <percentage>"
 permissions:
     prisonmining.help:
         description: "Allows player to view Prison Commands"

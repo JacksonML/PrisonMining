@@ -5,10 +5,12 @@ namespace JacksonML\PrisonMining;
 class Mine{
     public $name;
     public $coords;
+    public $blocks;
     public function __construct($name,$x1,$y1,$z1,$x2,$y2,$z2){
         $this->name = $name;
         $coords1 = array();
         $coords2 = array();
+        $blocks = array();
         
         if($x1 > $x2){
             array_push($coords2, $x1);
@@ -40,4 +42,14 @@ class Mine{
         $this->coords = array("coords1" => $coords1,
             "coords2" => $coords2);
 }
+    public function checkBlocks(){
+        if ($blocks){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    public function addBlock($block, $percentage){
+        array_push($block,$percentage);
+    }
 }
