@@ -31,11 +31,8 @@ class PrisonMining extends PluginBase{
             array_push($this->mineData, $mineToSendDataEnable);
             
             //Creates object
-            $newObj = "_MineObjData_" . $this->mineData[$i]["name"];
-            $GLOBALS[$newObj] = new Mine($this->mineData[$i]["name"],$this->mineData[$i]["coords"]["coords1"][0],$this->mineData[$i]["coords"]["coords1"][1],$this->mineData[$i]["coords"]["coords1"][2],
+            $GLOBALS["_MineObjData_" . $this->mineData[$i]["name"]] = new Mine($this->mineData[$i]["name"],$this->mineData[$i]["coords"]["coords1"][0],$this->mineData[$i]["coords"]["coords1"][1],$this->mineData[$i]["coords"]["coords1"][2],
                     $this->mineData[$i]["coords"]["coords2"][0],$this->mineData[$i]["coords"]["coords2"][1],$this->mineData[$i]["coords"]["coords2"][2]);
-        
-            $this->getLogger()->info($GLOBALS[$newObj]->coords["coords1"][0]); //Debug
         }
         $this->getLogger()->info("Prison Mining has been enabled");
     }
@@ -73,12 +70,13 @@ class PrisonMining extends PluginBase{
             return true;
         }elseif(strtolower($command->getName()) === "prmdefine"){
             $this->test1 = new Mine($args[0],$this->x1,$this->y1,$this->z1,$this->x2,$this->y2,$this->z2);
-            $sender->sendMessage($this->test1->coords["coords1"][0]);
             $mineToSendData = array("name" => $this->test1->name,
                 "coords" => $this->test1->coords);
             array_push($this->mineData, $mineToSendData);
-            return true;
-                        
+            
+            $GLOBALS["_MineObjData_" . $args[0]] = new Mine($args[0],$this->x1,$this->y1,$this->z1,$this->x2,$this->y2,$this->z2);
+            
+            return true;            
         }elseif(strtolower($command->getName()) === "prmfill"){
             if($args[0]){ // Controls if command returns false or true
             
@@ -109,4 +107,3 @@ class PrisonMining extends PluginBase{
         }
     }
 }
-
