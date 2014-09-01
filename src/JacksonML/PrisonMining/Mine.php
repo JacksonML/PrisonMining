@@ -33,23 +33,10 @@ class Mine{
             array_push($coords1, $z1);
             array_push($coords2, $z2);
         }
-        //$coords1 = array("x" => $x1,
-            //"y" => $y1,
-            //"z" => $z1);
-        //$coords2 = array("x" => $x2,
-            //"y" => $y2,
-            //"z" => $z2);
         $this->coords = array("coords1" => $coords1,
             "coords2" => $coords2);
 }
-    public function checkBlocks(){
-        if ($blocks){
-            return 1;
-        }else{
-            return 0;
-        }
-    }
     public function addBlock($block, $percentage){
-        array_push($block,$percentage);
+        return true;
     }
 }

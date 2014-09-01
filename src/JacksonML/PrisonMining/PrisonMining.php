@@ -92,18 +92,13 @@ class PrisonMining extends PluginBase{
             for($xLoop = 0; $xLoop <= $x2Loop-$x1Loop;$xLoop++){ //Loops through all X blocks
                 for($yLoop = 0; $yLoop <= $y2Loop-$y1Loop;$yLoop++){ //Loops through all Y blocks
                     for($zLoop = 0; $zLoop <= $z2Loop-$z1Loop;$zLoop++){ //Loops through all Z blocks
-                        $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$x1Loop,$yLoop+$y1Loop,$zLoop+$z1Loop), Block::get(46), true, true);
+                        $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$x1Loop,$yLoop+$y1Loop,$zLoop+$z1Loop), Block::get(46), true, false);
                     }     
                 }
             }
             return true;}else{return false;}
         }elseif(strtolower($command->getName()) === "prmaddblock"){
-            $objToCheck = "_MineObjData_" . $args[0];
-            if(isset($$objToCheck)){
-                $$objToCheck->addBlock($args[1],$args[2]);
-                return true;
-             }else{return false;}
-            
+            $GLOBALS["_MineObjData_" . $args[0]]->addBlock($args[1],$args[2]);
         }
     }
 }
