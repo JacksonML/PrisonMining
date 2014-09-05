@@ -24,7 +24,7 @@ class PrisonMining extends PluginBase{
         $this->test2 = $this->configFile->get("Mines");
         for($i = 0;$i < count($this->test2);$i++){
             
-            //Sends data to array. Will HOPEFULLY be removed soon
+            //Sends data to array. Will HOPEFULLY be removed/changed soon
             $mineToSendDataEnable = array("name" => $this->test2[$i]["name"],
             "coords" => $this->test2[$i]["coords"]);
             $this->getLogger()->info("Mine " . $this->test2[$i]["name"] . " has loaded.");
@@ -76,12 +76,13 @@ class PrisonMining extends PluginBase{
             
             $GLOBALS["_MineObjData_" . $args[0]] = new Mine($args[0],$this->x1,$this->y1,$this->z1,$this->x2,$this->y2,$this->z2);
             
+            $sender->sendMessage($args[0] . " has been created.");
             return true;            
         }elseif(strtolower($command->getName()) === "prmfill"){
             if($args[0]){ // Controls if command returns false or true
             
             $objToCheck = "_MineObjData_" . $args[0];
-            $this->getLogger()->info($objToCheck);
+            
             // Creates variables for cleaner coding
             $x1Loop = $GLOBALS[$objToCheck]->coords["coords1"][0];$x2Loop = $GLOBALS[$objToCheck]->coords["coords2"][0];
             $y1Loop = $GLOBALS[$objToCheck]->coords["coords1"][1];$y2Loop = $GLOBALS[$objToCheck]->coords["coords2"][1];
@@ -96,6 +97,7 @@ class PrisonMining extends PluginBase{
                     }     
                 }
             }
+            $sender->sendMessage($args[0] . " has been filled");
             return true;}else{return false;}
         }elseif(strtolower($command->getName()) === "prmaddblock"){
             $GLOBALS["_MineObjData_" . $args[0]]->addBlock($args[1],$args[2]);
