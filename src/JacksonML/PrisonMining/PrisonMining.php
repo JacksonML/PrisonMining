@@ -20,27 +20,42 @@ class PrisonMining extends PluginBase{
         $this->configFile = new Config($this->getDataFolder()."saves.yml", Config::YAML, array());
         
         //Pulls data out of config and into a variable
-        $this->mineData = array();
-        $this->test2 = $this->configFile->get("Mines");
-        for($i = 0;$i < count($this->test2);$i++){
+        $GLOBALS["mineData"] = array();
+        $this->mineNames = array();
+        $this->configData = $this->configFile->get("Mines");
+        for($i = 0;$i < count($this->configData);$i++){
             
             //Sends data to array. Will HOPEFULLY be removed/changed soon
-            $mineToSendDataEnable = array("name" => $this->test2[$i]["name"],
-            "coords" => $this->test2[$i]["coords"]);
-            $this->getLogger()->info("Mine " . $this->test2[$i]["name"] . " has loaded.");
-            array_push($this->mineData, $mineToSendDataEnable);
+            $mineToSendDataEnable = array("name" => $this->configData[$i]["name"],
+            "coords" => $this->configData[$i]["coords"],
+            "blocks" => $this->configData[$i]["blocks"]);
+            $this->getLogger()->info("Mine " . $this->configData[$i]["name"] . " has loaded.");
+            array_push($GLOBALS["mineData"], $mineToSendDataEnable);
+            array_push($this->mineNames,$this->configData[$i]["name"]);
             
             //Creates object
-            $GLOBALS["_MineObjData_" . $this->mineData[$i]["name"]] = new Mine($this->mineData[$i]["name"],$this->mineData[$i]["coords"]["coords1"][0],$this->mineData[$i]["coords"]["coords1"][1],$this->mineData[$i]["coords"]["coords1"][2],
-                    $this->mineData[$i]["coords"]["coords2"][0],$this->mineData[$i]["coords"]["coords2"][1],$this->mineData[$i]["coords"]["coords2"][2]);
+            $GLOBALS["_MineObjData_" . $GLOBALS["mineData"][$i]["name"]] = new Mine($GLOBALS["mineData"][$i]["name"],$GLOBALS["mineData"][$i]["coords"]["coords1"][0],$GLOBALS["mineData"][$i]["coords"]["coords1"][1],$GLOBALS["mineData"][$i]["coords"]["coords1"][2],$GLOBALS["mineData"][$i]["coords"]["coords2"][0],$GLOBALS["mineData"][$i]["coords"]["coords2"][1],$GLOBALS["mineData"][$i]["coords"]["coords2"][2],$GLOBALS["mineData"][$i]["blocks"]);
         }
         $this->getLogger()->info("Prison Mining has been enabled");
     }
     public function onDisable(){
         $this->getLogger()->info("Prison Mining is saving mines");
         
+        //Constructs data for saving
+        $mineDataConfig = array();
+        $this->getLogger()->info("BEFORE LOOP");
+        for($i = 0; $i < count($this->mineNames); $i++){
+            $mineSending = array("name" => $GLOBALS["_MineObjData_" . $this->mineNames[$i]]->name,
+                "coords" => $GLOBALS["_MineObjData_" . $this->mineNames[$i]]->coords,
+                "blocks" => $GLOBALS["_MineObjData_" . $this->mineNames[$i]]->blocks);
+            array_push($mineDataConfig,$mineSending);
+            $this->getLogger()->info("SAVED LOOP");
+        }
+
+
         //Re-Saves mines to file
-        $this->configFile->set("Mines",$this->mineData);
+        //$this->configFile->set("Mines",$GLOBALS["mineData"]);
+        $this->configFile->set("Mines",$mineDataConfig);
         $this->configFile->save();
         
         $this->getLogger()->info("Prison Mining saved the mines and has been disabled");
@@ -72,35 +87,63 @@ class PrisonMining extends PluginBase{
             $this->test1 = new Mine($args[0],$this->x1,$this->y1,$this->z1,$this->x2,$this->y2,$this->z2);
             $mineToSendData = array("name" => $this->test1->name,
                 "coords" => $this->test1->coords);
-            array_push($this->mineData, $mineToSendData);
+            array_push($GLOBALS["mineData"], $mineToSendData);
+            array_push($this->mineNames,$args[0]);
             
             $GLOBALS["_MineObjData_" . $args[0]] = new Mine($args[0],$this->x1,$this->y1,$this->z1,$this->x2,$this->y2,$this->z2);
-            
+
             $sender->sendMessage($args[0] . " has been created.");
             return true;            
         }elseif(strtolower($command->getName()) === "prmfill"){
             if($args[0]){ // Controls if command returns false or true
             
-            $objToCheck = "_MineObjData_" . $args[0];
+            $mineDataFill = "_MineObjData_" . $args[0];
             
             // Creates variables for cleaner coding
-            $x1Loop = $GLOBALS[$objToCheck]->coords["coords1"][0];$x2Loop = $GLOBALS[$objToCheck]->coords["coords2"][0];
-            $y1Loop = $GLOBALS[$objToCheck]->coords["coords1"][1];$y2Loop = $GLOBALS[$objToCheck]->coords["coords2"][1];
-            $z1Loop = $GLOBALS[$objToCheck]->coords["coords1"][2];$z2Loop = $GLOBALS[$objToCheck]->coords["coords2"][2];
+            $x1Loop = &$GLOBALS[$mineDataFill]->coords["coords1"][0];$x2Loop = &$GLOBALS[$mineDataFill]->coords["coords2"][0];
+            $y1Loop = &$GLOBALS[$mineDataFill]->coords["coords1"][1];$y2Loop = &$GLOBALS[$mineDataFill]->coords["coords2"][1];
+            $z1Loop = &$GLOBALS[$mineDataFill]->coords["coords1"][2];$z2Loop = &$GLOBALS[$mineDataFill]->coords["coords2"][2];
             
             
+
             // Loops through all blocks and places all blocks
             for($xLoop = 0; $xLoop <= $x2Loop-$x1Loop;$xLoop++){ //Loops through all X blocks
                 for($yLoop = 0; $yLoop <= $y2Loop-$y1Loop;$yLoop++){ //Loops through all Y blocks
                     for($zLoop = 0; $zLoop <= $z2Loop-$z1Loop;$zLoop++){ //Loops through all Z blocks
-                        $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$x1Loop,$yLoop+$y1Loop,$zLoop+$z1Loop), Block::get(46), true, false);
+                        //Block chooser
+                        $randomBlock = mt_rand (0, 1000) / 10;
+                        $blockOriginal = &$GLOBALS[$mineDataFill]->blocks;
+                        $percentageAdding = 0;
+                        $blockData = array();
+                        for($i = 0;$i < count($blockOriginal);$i++){
+                            $percentageAdding = $blockOriginal[$i]["percentage"] + $percentageAdding;
+                            $blockProcess = array ("blockId" => $blockOriginal[$i]["blockId"],
+                                "percentage" => $percentageAdding);
+                            array_push($blockData, $blockProcess);
+                        }
+                        for($i = 0;$i < count($blockData);$i++){
+                            
+                            if(isset($blockData[$i+1])){
+                                if(($blockData[$i]["percentage"] < $randomBlock) and ($blockData[$i+1]["percentage"] > $randomBlock)){
+                                    $this->blockIdFill = $blockData[$i]["blockId"];
+                                }
+                            }else{
+                                if($blockData[$i]["percentage"] < $randomBlock){
+                                    $this->blockIdFill = $blockData[$i]["blockId"];
+                                }
+                            }
+                        $this->getLogger()->info("RANDOM GENERATED VALUE: " . $randomBlock . ", BLOCK ID: " . $this->blockIdFill . ", BLOCK VAR VALUE: " . $blockData[$i]["blockId"] . ", BLCOK COUNT: " . count($blockData));
+                        }
+                        //Block Placer
+                        $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$x1Loop,$yLoop+$y1Loop,$zLoop+$z1Loop), Block::get($this->blockIdFill), true, false);
                     }     
                 }
             }
             $sender->sendMessage($args[0] . " has been filled");
             return true;}else{return false;}
         }elseif(strtolower($command->getName()) === "prmaddblock"){
-            $GLOBALS["_MineObjData_" . $args[0]]->addBlock($args[1],$args[2]);
+            $GLOBALS["_MineObjData_" . $args[0]]->addBlock($args[1],$args[2], $sender);
+            return true;
         }
     }
 }

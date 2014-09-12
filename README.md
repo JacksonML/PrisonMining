@@ -3,10 +3,11 @@
 <p>PrisonMining is supposed to be like the plugin Prison Mine or similar plugins on PC Bukkit, but designed for a mobile experience!</p>
 <h2>RoadMap</h2>
 <h3>Alpha:</h3><ul>
-<li>Mines fill themselves with blocks defined by the user</li>
+<li>Mines are filled with blocks defined by the user</li>
 <li>Mines will autofill a specified amount of time</li>
 <li>Fix bug with config file generating blank useless entry</li>
-<li>Create a /prmprocess to process mines in case they contain invalid data</li>
+<li>Fix crash when trying to modify a non-existant mine</li>
+<li>Be able to remove blocks via commands</li>
 </ul>
 <h3>Beta</h3><ul>
 <li>Plugin will respond with useful log messages</li>
