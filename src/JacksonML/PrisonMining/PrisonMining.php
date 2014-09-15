@@ -116,10 +116,11 @@ class PrisonMining extends PluginBase{
                         $percentageAdding = 0;
                         $blockData = array();
                         for($i = 0;$i < count($blockOriginal);$i++){
-                            $percentageAdding = $blockOriginal[$i]["percentage"] + $percentageAdding;
+                            
                             $blockProcess = array ("blockId" => $blockOriginal[$i]["blockId"],
                                 "percentage" => $percentageAdding);
                             array_push($blockData, $blockProcess);
+                            $percentageAdding = $blockOriginal[$i]["percentage"] + $percentageAdding;
                         }
                         for($i = 0;$i < count($blockData);$i++){
                             
@@ -132,7 +133,6 @@ class PrisonMining extends PluginBase{
                                     $this->blockIdFill = $blockData[$i]["blockId"];
                                 }
                             }
-                        $this->getLogger()->info("RANDOM GENERATED VALUE: " . $randomBlock . ", BLOCK ID: " . $this->blockIdFill . ", BLOCK VAR VALUE: " . $blockData[$i]["blockId"] . ", BLCOK COUNT: " . count($blockData));
                         }
                         //Block Placer
                         $this->getServer()->getLevelByName("flat")->setBlock(new Vector3($xLoop+$x1Loop,$yLoop+$y1Loop,$zLoop+$z1Loop), Block::get($this->blockIdFill), true, false);
