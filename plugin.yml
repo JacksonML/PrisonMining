@@ -1,6 +1,6 @@
 name: PrisonMining
 main: JacksonML\PrisonMining\PrisonMining
-version: 1.0.0
+version: 0.3
 api: 1.1.0
 commands:
     prm:

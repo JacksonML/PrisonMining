@@ -112,7 +112,7 @@ class PrisonMining extends PluginBase{
                     for($zLoop = 0; $zLoop <= $z2Loop-$z1Loop;$zLoop++){ //Loops through all Z blocks
                         //Block chooser
                         $randomBlock = mt_rand (0, 1000) / 10;
-                        $blockOriginal = &$GLOBALS[$mineDataFill]->blocks;
+                        $blockOriginal = $GLOBALS[$mineDataFill]->blocks;
                         $percentageAdding = 0;
                         $blockData = array();
                         for($i = 0;$i < count($blockOriginal);$i++){
@@ -140,6 +140,7 @@ class PrisonMining extends PluginBase{
                 }
             }
             $sender->sendMessage($args[0] . " has been filled");
+            unset($percentageAdding, $blockOriginal, $blockProcess, $x1Loop, $y1Loop, $z1Loop, $x2Loop, $y2Loop, $z2Loop);
             return true;}else{return false;}
         }elseif(strtolower($command->getName()) === "prmaddblock"){
             $GLOBALS["_MineObjData_" . $args[0]]->addBlock($args[1],$args[2], $sender);
