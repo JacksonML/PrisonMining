@@ -1,6 +1,6 @@
 name: PrisonMining
 main: JacksonML\PrisonMining\PrisonMining
-version: 0.3
+version: 0.4
 api: 1.1.0
 commands:
     prm:
@@ -26,6 +26,12 @@ commands:
     prmaddblock:
         description: "Adds a block to a specified mine"
         usage: "/prmfill <mineID> <blockID> <percentage>"
+    jail:
+        description: "Jails player. Player has to mine set number of blocks to get out"
+        usage: "/jail <username> <number of blocks>"
+    jailstatus:
+        description: "Checks how many blocks you must break until you are free."
+        usage: "/jailstatus"
 permissions:
     prisonmining.help:
         description: "Allows player to view Prison Commands"
@@ -41,4 +47,10 @@ permissions:
         default: true
     prisonmining.fill:
         description: "Allows a player to fill in a mine with blocks"
+        default: true
+    jail:
+        description: "Allows a player to jail another player"
+        default: true
+    jailstatus:
+        description: "Allows a player to check their prison status"
         default: true
