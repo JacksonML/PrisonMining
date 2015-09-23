@@ -1,6 +1,6 @@
 name: PrisonMining
 main: JacksonML\PrisonMining\PrisonMining
-version: 0.4
+version: 0.5
 api: 1.1.0
 commands:
     prm:
@@ -26,6 +26,12 @@ commands:
     prmaddblock:
         description: "Adds a block to a specified mine"
         usage: "/prmfill <mineID> <blockID> <percentage>"
+    prmteleportpos:
+        description: "Defines where a player will be teleported when jailed"
+        usage: "/prmteleportpos <mineID> <username>"
+    free:
+        description: "Frees a player from jail"
+        usage: "/free <username>"
     jail:
         description: "Jails player. Player has to mine set number of blocks to get out"
         usage: "/jail <username> <number of blocks>"

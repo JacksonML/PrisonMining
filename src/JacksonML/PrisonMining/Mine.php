@@ -6,8 +6,8 @@ class Mine{
     public $name;
     public $coords;
     public $blocks;
-    public $time;
-    public function __construct($name,$x1,$y1,$z1,$x2,$y2,$z2,$blockArray = array(),$time){
+    public $teleportPos;
+    public function __construct($name,$x1,$y1,$z1,$x2,$y2,$z2,$blockArray = array(), $telpos = NULL){
         $this->name = $name;
         $coords1 = array();
         $coords2 = array();
@@ -38,7 +38,9 @@ class Mine{
         if(count($blockArray)){
             $this->blocks = $blockArray;
         }
-        $this->time = time;
+        if (isset($telpos)){
+            $this->teleportPos = $telpos;
+        }
 }
     public function addBlock($blockToAdd, $percentage,$sender){
         //Calculates total percentage

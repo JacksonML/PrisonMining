@@ -31,7 +31,7 @@ class PrisonMining extends PluginBase implements Listener{
         for ($i = 0; $i < count($this->configData); $i++) {
 
             //Creates object
-            array_push($this->mines, new Mine($this->configData[$i]["name"], $this->configData[$i]["coords"]["coords1"][0], $this->configData[$i]["coords"]["coords1"][1], $this->configData[$i]["coords"]["coords1"][2], $this->configData[$i]["coords"]["coords2"][0], $this->configData[$i]["coords"]["coords2"][1], $this->configData[$i]["coords"]["coords2"][2], $this->configData[$i]["blocks"], $this->configData[$i]["time"]));
+            array_push($this->mines, new Mine($this->configData[$i]["name"], $this->configData[$i]["coords"]["coords1"][0], $this->configData[$i]["coords"]["coords1"][1], $this->configData[$i]["coords"]["coords1"][2], $this->configData[$i]["coords"]["coords2"][0], $this->configData[$i]["coords"]["coords2"][1], $this->configData[$i]["coords"]["coords2"][2], $this->configData[$i]["blocks"], $this->configData[$i]["teleportPos"]));
             $this->getLogger()->info("Mine " . $this->configData[$i]["name"] . " has loaded.");
         }
         // User data config
@@ -57,8 +57,9 @@ class PrisonMining extends PluginBase implements Listener{
             $mineSending = array("name" => $this->mines[$i]->name,
                 "coords" => $this->mines[$i]->coords,
                 "blocks" => $this->mines[$i]->blocks,
-                "time" => $this->mines[$i]->time);
+                "teleportPos" => $this->mines[$i]->teleportPos);
             array_push($mineDataConfig, $mineSending);
+            $this->getLogger()->info($mineSending["name"]);
         }
 
         //Re-Saves mines to file
@@ -161,7 +162,7 @@ class PrisonMining extends PluginBase implements Listener{
              * appears to freeze the client for a few seconds.
              */
             if ($args[0]) { // Controls if command returns false or true
-                if ($this->mines[0] == null){
+                if (isset($this->mines[0]) == false){
                     $sender->sendMessage(TextFormat::DARK_PURPLE."[Jail]" . TextFormat::WHITE." There are no mines! Create one with /prmdefine!");
                     return true;
                 }
@@ -240,14 +241,30 @@ class PrisonMining extends PluginBase implements Listener{
             }
             $this->mines[$i]->addBlock($args[1], $args[2], $sender);
             return true;
+        } elseif (strtolower($command->getName()) === "free") {
+            if (isset($args[0]) == false){ return false; }
+            for($i = 0; $i < count($this->users);$i++){
+                if($this->users[$i][0] == $args[0]){
+                    array_splice($this->users, $i, 1);
+                    $this->getServer()->getPlayer($args[0])->sendMessage(TextFormat::DARK_PURPLE."[Jail]" . TextFormat::WHITE." You have been freed by " . $sender->getName());
+                    $this->getLogger()->info($sender->getName() . " has freed " . $args[0]);
+                    return true;
+                }
+            }
+            $sender->sendMessage(TextFormat::DARK_PURPLE."[Jail]" . TextFormat::WHITE." Player " . $args[0] . " is either not jailed.");
+            return true;
         } elseif (strtolower($command->getName()) === "jail") {
             $server = $this->getServer();
             array_push($this->users, array($args[0],
                 $args[1],
                 array($server->getPlayer($args[0])->x, $server->getPlayer($args[0])->y, $server->getPlayer($args[0])->z)));
-            $mineToUse = mt_rand(0, count($this->mines));
+            $mineToUse = mt_rand(0, count($this->mines)-1);
             $this->getLogger()->info($mineToUse);
-            $server->getPlayer($args[0])->teleport(new Vector3($this->mines[$mineToUse]->coords["coords2"][0], $this->mines[$mineToUse]->coords["coords2"][1], $this->mines[$mineToUse]->coords["coords2"][2]));
+            if (isset($this->mines[$mineToUse]->teleportPos)){
+                $server->getPlayer($args[0])->teleport(new Vector3($this->mines[$mineToUse]->teleportPos[0], $this->mines[$mineToUse]->teleportPos[1], $this->mines[$mineToUse]->teleportPos[2]));
+            } else {
+                $server->getPlayer($args[0])->teleport(new Vector3($this->mines[$mineToUse]->coords["coords2"][0], $this->mines[$mineToUse]->coords["coords2"][1], $this->mines[$mineToUse]->coords["coords2"][2]));
+            }
             return true;
         } elseif (strtolower($command->getName()) === "jailstatus") {
             // Loop to search through user database
@@ -259,6 +276,16 @@ class PrisonMining extends PluginBase implements Listener{
                 else { $sender->sendMessage (TextFormat::DARK_PURPLE."[Jail]" . TextFormat::WHITE." You are not in jail!"); return true; }
             }
             $sender->sendMessage (TextFormat::DARK_PURPLE."[Jail]" . TextFormat::WHITE." You are not in jail!");
+            return true;
+        } elseif (strtolower($command->getName()) === "prmteleportpos") {
+            for ($i = 0; $i < count($this->mines); $i++) {
+                if ($args[0] == $this->mines[$i]->name) {
+                    break;
+                }
+            }
+            
+            $this->mines[$i]->teleportPos = array($sender->x, $sender->y, $sender->z);
+            $sender->sendMessage (TextFormat::DARK_PURPLE."[Jail]" . TextFormat::WHITE." Position set!");
             return true;
         }
     }
